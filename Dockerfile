@@ -16,13 +16,19 @@ RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt
 RUN apt-get update
 RUN apt-get upgrade -y
 
-RUN apt-get -y install deluged deluge-web python-setuptools
+RUN apt-get -y install deluged deluge-web
 
+#copy over the config file.
+ADD core.conf ~/.config/deluge/core.conf
+#copy over the webconfig file.
+ADD web.conf ~/.config/deluge/web.conf
+#copy over the config file.
+ADD web_plugin.conf ~/.config/deluge/web_plugin.conf
 ########################################################################################################################
 # Configure Deluge
 
 # Expose our service
-EXPOSE 8081
+EXPOSE 54323
 
 # Run docker with -v /mnt/synoVideos:/mnt/synoVideos to have
 # our shows mounted in the container
@@ -39,7 +45,7 @@ EXPOSE 8081
 
 ########################################################################################################################
 # Start Deluge
-CMD ["/usr/local/bin/supervisord", "-c", "/etc/supervisor.conf", "-n"]
+CMD ["deluge"]
 
 
 ## Building ##
