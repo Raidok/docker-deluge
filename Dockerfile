@@ -16,14 +16,14 @@ RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt
 RUN apt-get update
 RUN apt-get upgrade -y
 
-RUN apt-get -y install deluged deluge-web
+RUN apt-get -y install deluge deluge-web
 
 #copy over the config file.
-ADD core.conf ~/.config/deluge/core.conf
+ADD core.conf //.config/deluge/core.conf
 #copy over the webconfig file.
-ADD web.conf ~/.config/deluge/web.conf
+ADD web.conf //.config/deluge/web.conf
 #copy over the config file.
-ADD web_plugin.conf ~/.config/deluge/web_plugin.conf
+ADD web_plugin.conf //.config/deluge/web_plugin.conf
 ########################################################################################################################
 # Configure Deluge
 
@@ -45,7 +45,7 @@ EXPOSE 54323
 
 ########################################################################################################################
 # Start Deluge
-CMD ["deluge"]
+CMD ["deluged", "&& deluge-web" ]
 
 
 ## Building ##
