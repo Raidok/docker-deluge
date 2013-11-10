@@ -7,14 +7,13 @@ MAINTAINER Jason Kulatunga jason@thesparktree.com
 # ENV Variables
 ENV DOCKER_HOME /var/docker
 ENV DELUGE_CONFIG_HOME //.config/deluge
-
-ENV DELUGE_COMPLETED_PATH /tmp/complete
-ENV DELUGE_PROCESSING_PATH /tmp/processing
-ENV DELUGE_BLACKHOLE_PATH /tmp/blackhole
 ENV DELUGE_DAEMON_PORT 58846
 ENV DELUGE_DAEMON_USER deluge
 ENV DELUGE_DAEMON_PASSWORD admin
 ENV DELUGE_WEBUI_PORT 54323
+ENV VOLUME_COMPLETED_PATH /tmp/complete
+ENV VOLUME_PROCESSING_PATH /tmp/processing
+ENV VOLUME_BLACKHOLE_PATH /tmp/blackhole
 ########################################################################################################################
 # Install Deluge
 
@@ -30,23 +29,16 @@ RUN apt-get -y install python-cheetah
 
 RUN apt-get -y install deluged deluge-web
 
-#copy over the config file.
-# ADD core.conf $DELUGE_CONFIG_HOME/core.conf
-#copy over the webconfig file.
-# ADD web.conf $DELUGE_CONFIG_HOME/web.conf
-#copy over the config file.
-# ADD web_plugin.conf $DELUGE_CONFIG_HOME/web_plugin.conf
-
 ADD template/auth.tmpl $DELUGE_CONFIG_HOME/auth.tmpl
 ADD template/core.tmpl $DELUGE_CONFIG_HOME/core.tmpl
 ADD template/web.tmpl $DELUGE_CONFIG_HOME/web.tmpl
 ADD template/web_plugin.tmpl $DELUGE_CONFIG_HOME/web_plugin.tmpl
 
- RUN cheetah f --env --oext conf $DELUGE_CONFIG_HOME/core
- RUN cheetah f --env --oext conf $DELUGE_CONFIG_HOME/web
- RUN cheetah f --env --oext conf $DELUGE_CONFIG_HOME/web_plugin
- RUN cheetah f --env --oext conf $DELUGE_CONFIG_HOME/auth
- RUN mv $DELUGE_CONFIG_HOME/auth.conf $DELUGE_CONFIG_HOME/auth
+RUN cheetah f --env --oext conf $DELUGE_CONFIG_HOME/core
+RUN cheetah f --env --oext conf $DELUGE_CONFIG_HOME/web
+RUN cheetah f --env --oext conf $DELUGE_CONFIG_HOME/web_plugin
+RUN cheetah f --env --oext conf $DELUGE_CONFIG_HOME/auth
+RUN mv $DELUGE_CONFIG_HOME/auth.conf $DELUGE_CONFIG_HOME/auth
 
 
 ########################################################################################################################
