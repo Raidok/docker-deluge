@@ -37,7 +37,8 @@ RUN apt-get -y install deluged deluge-web
 #copy over the config file.
 # ADD web_plugin.conf $DELUGE_CONFIG_HOME/web_plugin.conf
 
-RUN cheetah f --env --oext conf --odir $DELUGE_CONFIG_HOME ./template/core
+ADD template/core.tmpl /tmp/template/core.tmpl
+RUN cheetah f --env --oext conf --odir $DELUGE_CONFIG_HOME /tmp/template/core
 RUN cheetah f --env --oext conf --odir $DELUGE_CONFIG_HOME ./template/web
 RUN cheetah f --env --oext conf --odir $DELUGE_CONFIG_HOME ./template/web_plugin
 RUN cheetah f --env --oext conf --odir $DELUGE_CONFIG_HOME ./template/auth
