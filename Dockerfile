@@ -42,10 +42,11 @@ ADD template/core.tmpl $DELUGE_CONFIG_HOME/core.tmpl
 ADD template/web.tmpl $DELUGE_CONFIG_HOME/web.tmpl
 ADD template/web_plugin.tmpl $DELUGE_CONFIG_HOME/web_plugin.tmpl
 
-# RUN cheetah f --env --oext conf core
-# RUN cheetah f --env --oext conf web
-# RUN cheetah f --env --oext conf web_plugin
-# RUN cheetah f --env --oext conf auth
+ RUN cheetah f --env --oext conf $DELUGE_CONFIG_HOME/core
+ RUN cheetah f --env --oext conf $DELUGE_CONFIG_HOME/web
+ RUN cheetah f --env --oext conf $DELUGE_CONFIG_HOME/web_plugin
+ RUN cheetah f --env --oext conf $DELUGE_CONFIG_HOME/auth
+ RUN mv $DELUGE_CONFIG_HOME/auth.conf $DELUGE_CONFIG_HOME/auth
 
 
 ########################################################################################################################
