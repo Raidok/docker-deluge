@@ -37,17 +37,17 @@ RUN apt-get -y install deluged deluge-web
 #copy over the config file.
 # ADD web_plugin.conf $DELUGE_CONFIG_HOME/web_plugin.conf
 
-RUN cheetah f template/core.tmpl --env --oext conf --odir $DELUGE_CONFIG_HOME
-RUN cheetah f template/web.tmpl --env --oext conf --odir $DELUGE_CONFIG_HOME
-RUN cheetah f template/web_plugin.tmpl --env --oext conf --odir $DELUGE_CONFIG_HOME
-RUN cheetah f template/auth.tmpl --env --oext conf --odir $DELUGE_CONFIG_HOME
+RUN cheetah f template/core --env --oext conf --odir $DELUGE_CONFIG_HOME
+RUN cheetah f template/web --env --oext conf --odir $DELUGE_CONFIG_HOME
+RUN cheetah f template/web_plugin --env --oext conf --odir $DELUGE_CONFIG_HOME
+RUN cheetah f template/auth --env --oext conf --odir $DELUGE_CONFIG_HOME
 
 
 ########################################################################################################################
 # Configure Deluge
 
 # Expose our service
-EXPOSE $DELUGE_WEBUI_PORT
+EXPOSE 54323
 
 # Run docker with -v /mnt/synoVideos:/mnt/synoVideos to have
 # our shows mounted in the container
