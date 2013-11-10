@@ -5,7 +5,16 @@ MAINTAINER Jason Kulatunga jason@thesparktree.com
 
 ########################################################################################################################
 # ENV Variables
+ENV DOCKER_HOME /var/docker
+ENV DELUGE_CONFIG_HOME //.config/deluge
 
+ENV DELUGE_COMPLETED_PATH /tmp/complete
+ENV DELUGE_PROCESSING_PATH /tmp/processing
+ENV DELUGE_BLACKHOLE_PATH /tmp/blackhole
+ENV DELUGE_DAEMON_PORT 58846
+ENV DELUGE_DAEMON_USER deluge
+ENV DELUGE_DAEMON_PASSWORD admin
+ENV DELUGE_WEBUI_PORT 54323
 ########################################################################################################################
 # Install Deluge
 
@@ -16,19 +25,29 @@ RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt
 RUN apt-get update
 RUN apt-get upgrade -y
 
+# Install Python-Cheetah, a prereq for templating
+RUN apt-get -y install python-cheetah
+
 RUN apt-get -y install deluged deluge-web
 
 #copy over the config file.
-ADD core.conf //.config/deluge/core.conf
+# ADD core.conf $DELUGE_CONFIG_HOME/core.conf
 #copy over the webconfig file.
-ADD web.conf //.config/deluge/web.conf
+# ADD web.conf $DELUGE_CONFIG_HOME/web.conf
 #copy over the config file.
-ADD web_plugin.conf //.config/deluge/web_plugin.conf
+# ADD web_plugin.conf $DELUGE_CONFIG_HOME/web_plugin.conf
+
+RUN cheetah f template/core.tmpl --env --oext conf --odir $DELUGE_CONFIG_HOME
+RUN cheetah f template/web.tmpl --env --oext conf --odir $DELUGE_CONFIG_HOME
+RUN cheetah f template/web_plugin.tmpl --env --oext conf --odir $DELUGE_CONFIG_HOME
+RUN cheetah f template/auth.tmpl --env --oext conf --odir $DELUGE_CONFIG_HOME
+
+
 ########################################################################################################################
 # Configure Deluge
 
 # Expose our service
-EXPOSE 54323
+EXPOSE $DELUGE_WEBUI_PORT
 
 # Run docker with -v /mnt/synoVideos:/mnt/synoVideos to have
 # our shows mounted in the container
@@ -44,7 +63,7 @@ EXPOSE 54323
 
 
 ########################################################################################################################
-# Start Deluge
+# Start Deluge Daemon
 CMD ["deluged", "&& deluge-web" ]
 
 
